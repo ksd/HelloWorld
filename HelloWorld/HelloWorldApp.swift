@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct HelloWorldApp: App {
+    @State private var movieController = MovieController()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environment(movieController)
         }
     }
 }
