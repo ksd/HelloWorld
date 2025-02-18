@@ -11,16 +11,33 @@ struct ContentView: View {
     @Environment(MovieController.self) private var movieController: MovieController
 
     @State private var searchTerm = ""
+    @State var navigationPath: [Movie] = []
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             List {
                 ForEach(movieController.movies) { movie in
-                    MovieRow(for: movie)
+                    NavigationLink(value: movie) {
+                        MovieRow(for: movie)
+                    }
                 }
                 .onDelete(perform: deleteTask)
             }
             .navigationTitle("Sci-Fy Movies")
+            .navigationDestination(for: Movie.self, destination: { movie in
+                MovieDetailView(for: movie, navigationPath: $navigationPath)
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        navigationPath.append(movieController.movies[2])
+                        navigationPath.append(movieController.movies.last!)
+                    } label: {
+                        Image(systemName: "movieclapper")
+                    }
+                }
+            }
+
         }
 
         .searchable(
